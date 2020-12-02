@@ -41,8 +41,8 @@ def massage_input(i):
 
 ```python
 def part1(p):
-    occurences = p[2].count(p[1])
-    if occurences >= p[0][0] and occurences <= p[0][1]:
+    occurrences = p[2].count(p[1])
+    if occurrences >= p[0][0] and occurrences <= p[0][1]:
         return 1
     else:
         return 0
