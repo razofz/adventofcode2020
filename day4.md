@@ -69,27 +69,6 @@ def massage_input(i):
 ```
 
 ```python
-massage_input(test)
-```
-
-```python
-def part1(p):
-    p = massage_input(p)
-    print(fields.keys())
-    valids = 0
-#     for passport in p:
-# #         print(passport.keys())
-#         d = set(fields.keys()).difference(set(passport.keys())) 
-# #         print(len(passport.keys()))
-#         print(d)
-#         valids += 1 if len(d) < 1 or (len(d) == 1 and d == {'cid'}) else 0
-#         print(valids)
-    print([1 if len((d := set(fields.keys()).difference(set(passport.keys())))) < 1 or (len(d) == 1 and d == {'cid'}) else 0 for passport in massage_input(p)])
-    return ...
-#     return valids
-```
-
-```python
 def part1(p):
     return [1 if len((d := set(fields.keys()).difference(set(passport.keys())))) < 1 or (len(d) == 1 and d == {'cid'}) else 0 for passport in massage_input(p)]
 ```
@@ -107,14 +86,6 @@ assert sum(part1(test)) == 2
 ```python
 with open('day4-input.txt', 'r') as f:
     given = f.read()
-```
-
-```python
-given.count('\n\n')
-```
-
-```python
-len(massage_input(given))
 ```
 
 ```python
@@ -161,12 +132,6 @@ iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719
 '''
 ```
 
-```python
-def massage_input_for_validation(i):
-    i = [line.split() for line in i.split('\n\n')]
-    return [{field.split(':')[0]: field.split(':')[1] for field in passport} for passport in i]
-```
-
 Continuing the manual data validation, since the "better" approaches took too much time today. See below for WIP on those approaches.
 
 ```python
@@ -201,10 +166,6 @@ def valid_input(key, value):
     return True
 ```
 
-```python
-valid_input('hcl', '#12345f')
-```
-
 > Check singular values:
 
 ```python
@@ -232,7 +193,6 @@ assert valid_input('pid', '0123456789') == False
 ```python
 for passport in massage_input(valids):
     for field in passport.items():
-        print(field[0], field[1])
         assert valid_input(field[0], field[1]) == True
 ```
 
@@ -250,7 +210,6 @@ def part2(p):
     errors = {k: 0 for k in list(fields.keys()) + ['passport']}
     for passport in massage_input(p):
         valid = True
-#         print(set(fields.keys()).difference(set(passport.keys())))
         if not (len((d := set(fields.keys()).difference(set(passport.keys())))) < 1 or (len(d) == 1 and d == {'cid'})):
             valid = False
             errors['passport'] += 1
@@ -260,7 +219,6 @@ def part2(p):
                 if not valid:
                     errors[key] += 1
                     break
-#         print(valid)
         if valid:
             valid_passports += 1
     return valid_passports, errors
@@ -292,44 +250,27 @@ for passport in m:
 part2(test)
 ```
 
-```python
-part2(given)
-```
-
-```python
-def part2(p):
-    p = massage_input(p)
-    print(fields.keys())
-    valids = 0
-#     for passport in p:
-# #         print(passport.keys())
-#         d = set(fields.keys()).difference(set(passport.keys())) 
-# #         print(len(passport.keys()))
-#         print(d)
-#         valids += 1 if len(d) < 1 or (len(d) == 1 and d == {'cid'}) else 0
-#         print(valids)
-    print([1 if len((d := set(fields.keys()).difference(set(passport.keys())))) < 1 or (len(d) == 1 and d == {'cid'}) else 0 for passport in massage_input(p)])
-#     return valids
-```
-
 ### Run
 
 ```python
-np.prod([part2(given, x[0], x[1]) for x in steps])
-```
-
-```python
-[part2(given, x[0], x[1]) for x in steps]
+part2(given)
 ```
 
 ---
 
 ## Validation approaches
 
-Realised for part 2 that it would be nice to do a more formal data validation approach, and also put some modules for that in my toolbox. However, after giving that a try I realised it would take too much time for today, as I would also have to change the reading-in of the data. But, it was good to dip my feet in it, and there's a probability that I will get opportunity to use this in future problems this December.
+Realised for part 2 that it would be nice to do a more formal data validation approach, and also put some modules for that in my personal toolbox. However, after giving that a try I realised it would take too much time for today, as I would also have to change the reading-in of the data. But, it was good to dip my feet in it, and there's a probability that I will get opportunity to use this in future problems this December.
+
+
+- https://github.com/keleshev/schema
+- [https://github.com/podio/valideer]() 
+- https://pydantic-docs.helpmanual.io/usage/models/#data-conversion
+- https://schematics.readthedocs.io/en/latest/
 
 
 ### Schema
+
 
 ```python
 from schema import Schema, And, Use, Optional, SchemaError
@@ -358,11 +299,12 @@ schema.validate(massage_input(test)[0])
 schema.validate({'byr': '1900'})
 ```
 
+<!-- #region -->
 ### Valideer
 
-[https://github.com/podio/valideer]() 
 
 Seems nice. 
+<!-- #endregion -->
 
 ```python
 import valideer as V
